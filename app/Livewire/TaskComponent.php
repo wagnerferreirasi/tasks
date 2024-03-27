@@ -37,6 +37,7 @@ class TaskComponent extends Component
         $task->save();
 
         $this->tasks = Task::orderBy('created_at', 'desc')->get();
+        $this->reset('task');
     }
 
     public function complete(int $id)
@@ -72,9 +73,9 @@ class TaskComponent extends Component
             'name' => 'required|max:255',
         ]);
 
-        $this->task = Task::find($this->id);
-        $this->task->name = $this->name;
-        $this->task->save();
+        $task = Task::find($this->id);
+        $task->name = $this->name;
+        $task->save();
 
         $this->tasks = Task::orderBy('created_at', 'desc')->get();
 
