@@ -12,7 +12,7 @@ class TaskComponent extends Component
 {
     public $task;
     public $name;
-    public $state = [];
+    public $id;
     public $completed = false;
     public $tasks;
 
@@ -60,10 +60,10 @@ class TaskComponent extends Component
     {
 
         $task = Task::find($id);
-        $this->state['name'] = $task->name;
-        $this->state['id'] = $task->id;
+        $this->name = $task->name;
+        $this->id = $task->id;
 
-        $this->dispatch('open-modal','modal_edit',$this->state);
+        $this->dispatch('open-modal','modal_edit');
     }
 
     public function update()
@@ -71,9 +71,13 @@ class TaskComponent extends Component
         $this->validate([
             'name' => 'required|max:255',
         ]);
+
+        $this->task = Task::find($this->id);
         $this->task->name = $this->name;
         $this->task->save();
 
         $this->tasks = Task::orderBy('created_at', 'desc')->get();
+
+        $this->dispatch('close-modal','modal_edit');
     }
 }
