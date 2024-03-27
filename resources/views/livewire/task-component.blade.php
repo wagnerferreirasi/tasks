@@ -5,11 +5,12 @@
                 <div class="flex items-center justify-around w-full">
                     <input type="checkbox" wire:click="complete({{ $task->id }})" id="{{ $task->id }}"
                         value="{{ $task->id }}" class="checkbox checkbox-lg"
-                        {{ $task->completed ? 'checked' : '' }} />
-                    <input type="text" readonly value="{{ $task->name }}"
-                        class="input input-md input-bordered w-full max-w-lg" />
+                        {{ $task->completed ? 'checked disabled' : '' }} />
+                    <span
+                        class="w-1/2 text-center {{ $task->completed ? 'line-through' : '' }}">{{ $task->name }}</span>
                     <div class="flex gap-4">
-                        <button wire:click="edit({{ $task->id }})" class="btn btn-sm btn-primary">
+                        <button wire:click="callModal({{ $task->id }})"
+                            class="btn btn-sm btn-primary {{ $task->completed ? 'btn-disabled' : '' }}">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                 stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -25,13 +26,26 @@
                         </button>
                     </div>
                 </div>
-                @if ($task->completed_at)
-                    <div>
-                        <p></p>
-                    </div>
-                @endif
             </div>
         @endforeach
+
+        <x-modal name="modal_edit">
+            <div class="w-3xl mx-auto justify-center items-center p-6">
+                <h1 class="text-2xl font-bold">Edit Task {{ $task->id }}</h1>
+                <form wire:submit="update">
+                    <div class="mt-4">
+                        <input type="text" wire:model="name" placeholder="Type here"
+                            class="input input-bordered input-primary w-full" />
+                    </div>
+
+                    <div class="mt-4 text-end">
+                        <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                        <button x-on:click="$dispatch('close-modal', 'modal_edit_{{ $task->id }}')"
+                            class="btn btn-sm btn-error">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </x-modal>
 
         <div class="mt-4">
             <form wire:submit="save">
@@ -49,6 +63,6 @@
                 @enderror
             </form>
         </div>
-
     </div>
+
 </div>

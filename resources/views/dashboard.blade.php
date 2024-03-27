@@ -11,7 +11,7 @@
                 <div class="p-6 text-gray-900">
                     <div class="flex gap-4 justify-start items-center">
                         <img src="{{ asset('img/logo.png') }}" alt="" width="72" class="mr-8">
-                        <h1 class="text-3xl font-black">
+                        <h1 class="text-7xl font-bold">
                             Task Manager
                         </h1>
                     </div>
