@@ -18,7 +18,7 @@ class TaskComponent extends Component
 
     public function mount()
     {
-        $this->tasks = Task::orderBy('created_at', 'desc')->get();
+        $this->tasks = Task::where('user_id', auth()->user()->id)->orderBy('created_at', 'desc')->get();
     }
     public function render()
     {
@@ -36,7 +36,7 @@ class TaskComponent extends Component
         $task->name = $this->task;
         $task->save();
 
-        $this->tasks = Task::orderBy('created_at', 'desc')->get();
+        $this->tasks = Task::where('user_id', auth()->user()->id)->orderBy('created_at', 'desc')->get();
         $this->reset('task');
     }
 
@@ -47,14 +47,14 @@ class TaskComponent extends Component
         $task->completed_at = now();
         $task->save();
 
-        $this->tasks = Task::orderBy('created_at', 'desc')->get();
+        $this->tasks = Task::where('user_id', auth()->user()->id)->orderBy('created_at', 'desc')->get();
     }
 
     public function delete(int $id)
     {
         $task = Task::find($id);
         $task->delete();
-        $this->tasks = Task::orderBy('created_at', 'desc')->get();
+        $this->tasks = Task::where('user_id', auth()->user()->id)->orderBy('created_at', 'desc')->get();
     }
 
     public function callModal(int $id)
@@ -77,7 +77,7 @@ class TaskComponent extends Component
         $task->name = $this->name;
         $task->save();
 
-        $this->tasks = Task::orderBy('created_at', 'desc')->get();
+        $this->tasks = Task::where('user_id', auth()->user()->id)->orderBy('created_at', 'desc')->get();
 
         $this->dispatch('close-modal','modal_edit');
     }

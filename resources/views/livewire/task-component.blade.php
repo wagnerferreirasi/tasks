@@ -1,23 +1,25 @@
 <div>
     <div class="p-6 text-gray-900">
         @foreach ($tasks as $task)
-            <div class="bg-gray-200 rounded-full p-4 mb-4 flex">
+            <div class="bg-gray-200 rounded-full p-4 mb-4 flex" wire:key="{{ $task->id }}">
                 <div class="flex items-center justify-around w-full">
                     <input type="checkbox" wire:click="complete({{ $task->id }})" id="{{ $task->id }}"
                         value="{{ $task->id }}" class="checkbox checkbox-lg"
-                        {{ $task->completed ? 'checked disabled' : '' }} />
+                        {{ $task->completed ? 'checked disabled' : '' }} required />
                     <span
                         class="w-1/2 text-center {{ $task->completed ? 'line-through' : '' }}">{{ $task->name }}</span>
                     <div class="flex gap-4">
                         <button wire:click="callModal({{ $task->id }})"
-                            class="btn btn-sm btn-primary {{ $task->completed ? 'btn-disabled' : '' }}">
+                            class="btn btn-sm btn-primary tooltip {{ $task->completed ? 'btn-disabled' : '' }}"
+                            data-tip="Edit">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                 stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                             </svg>
                         </button>
-                        <button wire:click="delete({{ $task->id }})" class="btn btn-sm btn-error">
+                        <button wire:click="delete({{ $task->id }})" class="btn btn-sm tooltip btn-error"
+                            data-tip="Delete">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                 stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -29,29 +31,14 @@
             </div>
         @endforeach
 
-        <x-modal name="modal_edit">
-            <div class="w-3xl mx-auto justify-center items-center p-6">
-                <h1 class="text-2xl font-bold">Edit Task {{ $task->id }}</h1>
-                <form wire:submit="update">
-                    <div class="mt-4">
-                        <input type="text" wire:model="name" placeholder="Type here"
-                            class="input input-bordered input-primary w-full" />
-                    </div>
-
-                    <div class="mt-4 text-end">
-                        <button type="submit" class="btn btn-sm btn-primary">Save</button>
-                        <button x-on:click="$dispatch('close-modal', 'modal_edit_{{ $task->id }}')"
-                            class="btn btn-sm btn-error">Cancel</button>
-                    </div>
-                </form>
-            </div>
-        </x-modal>
-
         <div class="mt-4">
             <form wire:submit="save">
                 @csrf
                 <label class="input input-bordered flex items-center gap-2">
-                    <input type="text" wire:model="task" class="grow" placeholder="Digite sua tarefa" />
+                    <div class="indicator">
+                        <span class="indicator-item badge">Required</span>
+                        <input type="text" wire:model="task" class="input" placeholder="Add a new task" />
+                    </div>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -65,4 +52,21 @@
         </div>
     </div>
 
+    <x-modal name="modal_edit">
+        <div class="w-3xl mx-auto justify-center items-center p-6">
+            <h1 class="text-2xl font-bold">Edit Task</h1>
+            <form wire:submit="update">
+                <div class="mt-4">
+                    <input type="text" wire:model="name" placeholder="Type here"
+                        class="input input-bordered input-primary w-full" />
+                </div>
+
+                <div class="mt-4 text-end">
+                    <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                    <button x-on:click="$dispatch('close-modal', 'modal_edit_{{ $task->id ?? '' }}')"
+                        class="btn btn-sm btn-error">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </x-modal>
 </div>
